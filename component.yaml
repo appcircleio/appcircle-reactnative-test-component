@@ -1,0 +1,33 @@
+platform: Common
+buildPlatform: ReactNative
+displayName: "React Native Unit Test"
+description: "Run your react native tests"
+inputs:
+  - key: "AC_REPOSITORY_DIR"
+    defaultValue: "$AC_REPOSITORY_DIR"
+    isRequired: true
+    title: Repository Directory
+    description: Specifies the cloned repository directory.
+    helpText:
+  - key: "AC_OUTPUT_DIR"
+    defaultValue: "$AC_OUTPUT_DIR"
+    isRequired: true
+    title: Output Direction
+    description: Specify the output directory.
+    helpText:
+  - key: "AC_RN_TEST_COMMAND_ARGS"
+    defaultValue: "$AC_RN_TEST_COMMAND_ARGS"
+    isRequired: false
+    title: Extra commands
+    description: Specifiy extra commands to run the tests.
+    helpText:
+outputs:
+  - key: "AC_TEST_REPORT_JSON_PATH"
+    defaultValue: "AC_TEST_REPORT_JSON_PATH"
+    title: Test Report JSON Path
+    description: Path to the test report JSON file.
+    helpText:
+processFilename: ruby
+processArguments: "%AC_STEP_TEMP%/main.rb"
+files:
+  - "main.rb"

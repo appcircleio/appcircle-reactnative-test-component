@@ -6,10 +6,12 @@ def env_has_key(key)
     return (ENV[key] == nil || ENV[key] == "") ? nil : ENV[key]
 end
 
-$output_path = env_has_key("AC_OUTPUT_DIR")
-$repo_path = env_has_key("AC_REPOSITORY_DIR") || abort("Missing AC_WORKING_DIR.")
-$npm_params = env_has_key("AC_NPM_COMMAND_ARGS") || "install"
+$output_path = env_has_key("AC_OUTPUT_DIR") || abort("Missing AC_OUTPUT_DIR.")
+$repo_path = env_has_key("AC_REPOSITORY_DIR") || abort("Missing AC_REPOSITORY_DIR.")
+$npm_params = env_has_key("AC_RN_TEST_COMMAND_ARGS") || "jest"
 $test_result_path = "#{$output_path}/test.json"
+
+puts "REPO DIR #{env_has_key("AC_REPOSITORY_DIR")}"
 
 def run_command(command)
     puts "@@[command] #{command}"
@@ -30,17 +32,28 @@ def run_command(command)
     end
 end
 
-def runTests
+puts "Repo Path #{$repo_path}"
+run_command("ls -la")
 
-    run_command("brew install applesimutils")
-
-
-end
-
-yarn_or_npm = "npm"
-if File.file?("#{repo_path}/yarn.lock")
+$yarn_or_npm = "npm"
+if File.file?("#{$repo_path}/yarn.lock")
     yarn_or_npm = "yarn"
 end
 
-run_command("cd #{repo_path} && #{yarn_or_npm} #{npm_params}")
+def runTests
+    run_command("cd #{$repo_path} && ls -la") # add additional params from user
+    yarn_or_npm = "npm"
+    if File.file?("#{$repo_path}/yarn.lock")
+        yarn_or_npm = "yarn"
+    end
+
+    run_command("cd #{$repo_path} && yarn jest --reporters=default --reporters=jest-junit --coverage --coverageDirectory='custom-coverage' --coverageReporters='json' --coverageReporters='lcov' && ls -la")
+
+    File.open(ENV['AC_ENV_FILE_PATH'], 'a') do |f|
+        f.puts "AC_TEST_REPORT_JSON_PATH=#{$output_path}/junit.xml"
+      end
+    
+end
+
+
 runTests()
