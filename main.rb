@@ -47,11 +47,15 @@ def runTests
         yarn_or_npm = "yarn"
     end
 
-    run_command("cd #{$repo_path} && yarn jest --reporters=default --reporters=jest-junit --coverage --coverageDirectory='custom-coverage' --coverageReporters='json' --coverageReporters='lcov' && ls -la")
+    run_command("cd #{$repo_path} && yarn jest --reporters=default --reporters=jest-junit --coverage --coverageDirectory='coverage' --coverageReporters='json' --coverageReporters='lcov' && ls -la")
 
     File.open(ENV['AC_ENV_FILE_PATH'], 'a') do |f|
-        f.puts "AC_TEST_REPORT_JSON_PATH=#{$output_path}/junit.xml"
-      end
+        f.puts "AC_TEST_RESULT_PATH=#{$output_path}/junit.xml"
+    end
+    
+    File.open(ENV['AC_ENV_FILE_PATH'], 'a') do |f|
+        f.puts "AC_COVERAGE_RESULT_PATH=#{$output_path}/coverage"
+    end
     
 end
 

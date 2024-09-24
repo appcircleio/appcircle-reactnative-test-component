@@ -22,10 +22,15 @@ inputs:
     description: Specifiy extra commands to run the tests.
     helpText:
 outputs:
-  - key: "AC_TEST_REPORT_JSON_PATH"
-    defaultValue: "AC_TEST_REPORT_JSON_PATH"
-    title: Test Report JSON Path
-    description: Path to the test report JSON file.
+  - key: "AC_TEST_RESULT_PATH"
+    defaultValue: "AC_TEST_RESULT_PATH"
+    title: Test Result Path
+    description: Path to the test result file.
+    helpText:
+  - key: "AC_COVERAGE_RESULT_PATH"
+    defaultValue: "AC_COVERAGE_RESULT_PATH"
+    title: Coverage Result Path
+    description: Path to the coverage result file.
     helpText:
 processFilename: ruby
 processArguments: "%AC_STEP_TEMP%/main.rb"
