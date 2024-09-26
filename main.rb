@@ -35,11 +35,13 @@ def runTests
         yarn_or_npm = "yarn"
     end
 
-    report_command = $npm_params.nil? ? "jest --reporters=default --reporters=jest-junit --coverage --coverageDirectory='coverage' --coverageReporters='json' --coverageReporters='lcov'" : $npm_params
+    report_command = $npm_params.nil? ? "jest --coverage --coverageDirectory='coverage' --coverageReporters='lcov'" : $npm_params
     run_command("cd #{$repo_path} && #{yarn_or_npm} #{report_command}")
-    
+
     # copy test results to output directory for downloadable artifacts
-    run_command("cp #{$repo_path}/junit.xml #{$output_path}")
+    run_command("cp #{$repo_path}/test-reports/*-report.xml #{$output_path}")
+
+    # Copy coverage test reports to outputh directory for downloadable artifacts
     run_command("cp -r #{$repo_path}/coverage #{$output_path}")
     
 
@@ -47,6 +49,7 @@ def runTests
     File.open(ENV['AC_ENV_FILE_PATH'], 'a') do |f|
         f.puts "AC_TEST_RESULT_PATH=#{$output_path}"
     end
+    
     # Write AC_COVERAGE_RESULT_PATH reserved variable(coverage path) to the ENV file  report for test report component
     File.open(ENV['AC_ENV_FILE_PATH'], 'a') do |f|
         f.puts "AC_COVERAGE_RESULT_PATH=#{$output_path}/coverage"
