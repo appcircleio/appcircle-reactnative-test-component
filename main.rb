@@ -34,7 +34,6 @@ end
 def runTests
     results = []
   
-    begin
       yarn_or_npm = File.file?("#{$repo_path}/yarn.lock") ? "yarn" : "npm"
   
       report_command = $npm_params.nil? ? "jest --coverage --coverageDirectory='coverage' --coverageReporters='lcov'" : $npm_params
@@ -53,11 +52,6 @@ def runTests
       File.open(ENV['AC_ENV_FILE_PATH'], 'a') do |f|
         f.puts "AC_COVERAGE_RESULT_PATH=#{$output_path}/coverage"
       end
-  
-    rescue => e
-      # Catch and return any unexpected error
-      return "Error occurred: #{e}"
-    end
   
     # Check results and handle failure
     results.each_with_index do |(success, result), index|
