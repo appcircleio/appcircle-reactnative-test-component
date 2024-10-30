@@ -12,21 +12,15 @@ $npm_params = env_has_key("AC_RN_TEST_COMMAND_ARGS")
 
 def run_command(command)
   puts "@@[command] #{command}"
-  stdout_str = nil
-  stderr_str = nil
-  status = nil
-
-  Open3.popen3(command) do |stdin, stdout, stderr, wait_thr|
-    stdout.each_line { |line| puts line }
-    stdout_str = stdout.read
-    stderr_str = stderr.read
-    status = wait_thr.value
-  end
+  stdout_str, stderr_str, status = Open3.capture3(command)
 
   if status.success?
-    return true, stdout_str
+    puts stdout_str unless stdout_str.empty?
+    puts stderr_str unless stderr_str.empty?
+    return stderr_str.empty? ? stdout_str : stderr_str
   else
-    return false, stderr_str
+    puts "@@[error] Command failed:\n#{stderr_str}"
+    return stderr_str
   end
 end
 
