@@ -2,13 +2,20 @@ require 'find'
 require 'json'
 require 'open3'
 
+def get_env_variable(key)
+  return (ENV[key] == nil || ENV[key] == "") ? nil : ENV[key]
+end
+
 def env_has_key(key)
-  !ENV[key].nil? && ENV[key] != '' ? ENV[key] : abort("Missing #{key}.")
+  value = get_env_variable(key)
+	return value unless value.nil? || value.empty?
+
+	abort("Input #{key} is missing.")
 end
 
 $output_path = env_has_key("AC_OUTPUT_DIR")
 $repo_path = env_has_key("AC_REPOSITORY_DIR")
-$npm_params = env_has_key("AC_RN_TEST_COMMAND_ARGS")
+$npm_params = env_has_key("AC_RN_TEST_COMMAND_ARGS") 
 
 def run_command(command)
   puts "@@[command] #{command}"
