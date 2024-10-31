@@ -1,7 +1,7 @@
 platform: Common
 buildPlatform: ReactNative
 displayName: "React Native Unit Test"
-description: "Run your react native tests"
+description: "Run your React Native tests using Jest"
 inputs:
   - key: "AC_REPOSITORY_DIR"
     defaultValue: "$AC_REPOSITORY_DIR"
@@ -18,7 +18,7 @@ inputs:
   - key: "AC_RN_TEST_COMMAND_ARGS"
     isRequired: false
     title: Extra commands
-    description: Specifiy extra commands to run the tests.
+    description: Specify additional command arguments for running Jest tests, such as `--debug`. For more information, see the Jest [CLI options](https://jestjs.io/docs/cli#options).
     helpText:
 outputs:
   - key: "AC_TEST_RESULT_PATH"

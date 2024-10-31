@@ -1,24 +1,43 @@
 require 'open3'
 
+def get_env_variable(key)
+  return (ENV[key] == nil || ENV[key] == "") ? nil : ENV[key]
+end
+
 def env_has_key(key)
-	return (ENV[key] != nil && ENV[key] !="") ? ENV[key] : abort("Missing #{key}.")
+  value = get_env_variable(key)
+  return value unless value.nil? || value.empty?
+
+  abort("Input #{key} is missing.")
 end
 
 $output_path = env_has_key("AC_OUTPUT_DIR")
 $repo_path = env_has_key("AC_REPOSITORY_DIR")
-$npm_params = (ENV["AC_RN_TEST_COMMAND_ARGS"] != nil && ENV["AC_RN_TEST_COMMAND_ARGS"] !="") ? ENV["AC_RN_TEST_COMMAND_ARGS"] : nil
+$npm_params = get_env_variable("AC_RN_TEST_COMMAND_ARGS")
 
-def run_command(command)
-  puts "@@[command] #{command}"
-  stdout_str, stderr_str, status = Open3.capture3(command)
+$exit_status_code = 0
+def run_command(command, skip_abort)
+    puts "@@[command] #{command}"
+    status = nil
+    stdout_str = nil
+    stderr_str = nil
 
-  if status.success?
-    puts stdout_str unless stdout_str.empty?
-    puts stderr_str unless stderr_str.empty?
-    return stderr_str.empty? ? stdout_str : stderr_str
-  else
-    return stderr_str
-  end
+    Open3.popen3(command) do |stdin, stdout, stderr, wait_thr|
+        stdout.each_line do |line|
+            puts line
+        end
+        stdout_str = stdout.read
+        stderr_str = stderr.read
+        status = wait_thr.value
+    end
+
+    unless status.success?
+        puts stderr_str
+        unless skip_abort
+            exit -1
+        end
+        $exit_status_code = -1
+    end
 end
 
 def runTests
@@ -30,13 +49,9 @@ def runTests
   run_command("cd #{$repo_path} && #{yarn_or_npm} #{report_command}")
   run_command("cp #{$repo_path}/test-reports/*-report.xml #{$output_path}")
   run_command("cp -r #{$repo_path}/coverage #{$output_path}")
-      
 
   File.open(ENV['AC_ENV_FILE_PATH'], 'a') do |f|
     f.puts "AC_TEST_RESULT_PATH=#{$output_path}"
-  end
-
-  File.open(ENV['AC_ENV_FILE_PATH'], 'a') do |f|
     f.puts "AC_COVERAGE_RESULT_PATH=#{$output_path}/coverage"
   end
 
@@ -44,3 +59,4 @@ def runTests
 end
 
 runTests()
+exit $exit_status_code
