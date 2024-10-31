@@ -17,8 +17,8 @@ inputs:
     helpText:
   - key: "AC_RN_TEST_COMMAND_ARGS"
     isRequired: false
-    title: Extra Arguments
-    description: Specify additional command arguments for running Jest tests. An extra parameter will be added to the end of the command `jest --coverage --coverageDirectory=coverage --coverageReporters=lcov` which will be used by default. You can add extra arguments, such as `--debug --colors`, without affecting the default ones. For more information, see the Jest [CLI options](https://jestjs.io/docs/cli#options).
+    title: Jest Extra Arguments
+    description: Specify additional arguments for running Jest command. This args will be added to the end of the command `jest --coverage --coverageDirectory=coverage --coverageReporters=lcov` which will be used by default. You can add extra arguments, such as `--debug --colors`, without affecting the default ones. For more information, see the Jest [CLI options](https://jestjs.io/docs/cli#options).
     helpText:
 outputs:
   - key: "AC_TEST_RESULT_PATH"
