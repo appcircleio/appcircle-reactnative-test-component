@@ -13,7 +13,11 @@ end
 
 $output_path = env_has_key("AC_OUTPUT_DIR")
 $repo_path = env_has_key("AC_REPOSITORY_DIR")
-$npm_params = get_env_variable("AC_RN_TEST_COMMAND_ARGS")
+
+$npm_params = []
+if ENV["AC_RN_TEST_COMMAND_ARGS"] != "" && ENV["AC_RN_TEST_COMMAND_ARGS"] != nil
+  $npm_params = ENV["AC_RN_TEST_COMMAND_ARGS"].split("|")
+end
 
 $exit_status_code = 0
 def run_command(command, skip_abort)
@@ -44,7 +48,15 @@ def runTests
   
   yarn_or_npm = File.file?("#{$repo_path}/yarn.lock") ? "yarn" : "npm"
   
-  report_command = $npm_params.nil? ? "jest --coverage --coverageDirectory='coverage' --coverageReporters='lcov'" : $npm_params
+  report_command = "jest --coverage --coverageDirectory='coverage' --coverageReporters='lcov'"
+
+  if $npm_params.kind_of?(Array)
+    $npm_params.each do |option|
+      report_command.concat(" ")
+      report_command.concat(option)
+      report_command.concat(" ")
+    end
+  end
     
   run_command("cd #{$repo_path} && #{yarn_or_npm} #{report_command}")
   run_command("cp #{$repo_path}/test-reports/*-report.xml #{$output_path}")
