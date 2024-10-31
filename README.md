@@ -1,12 +1,14 @@
-# Appcircle React Native UI Test Component
+# Appcircle React Native Unit Test Component
 
-Run React Native UI Tests with Detox
+Run React Native unit tests with Jest.
 
 ## Required Input Variables
 
 - `$AC_REPOSITORY_DIR`: Specifies the cloned repository directory.
 - `$AC_OUTPUT_DIR`: Specify the output directory for test results.
-- `$AC_RN_TEST_COMMAND_ARGS`: Specify additional command arguments for running Jest tests, such as `--debug`. For more information, see the Jest [CLI options](https://jestjs.io/docs/cli#options).
+
+## Optional Input Variables
+- `$AC_RN_TEST_COMMAND_ARGS`: Specify additional command arguments for running Jest tests. An extra parameter will be added to the end of the command `jest --coverage --coverageDirectory=coverage --coverageReporters=lcov` which will be used by default. You can add extra arguments, such as `--debug`, without affecting the default ones. For more information, see the Jest [CLI options](https://jestjs.io/docs/cli#options).
 
 ## Output Variables
 
