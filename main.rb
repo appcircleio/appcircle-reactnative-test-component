@@ -58,9 +58,9 @@ def runTests
     end
   end
     
-  run_command("cd #{$repo_path} && #{yarn_or_npm} #{report_command}")
-  run_command("cp #{$repo_path}/test-reports/*-report.xml #{$output_path}")
-  run_command("cp -r #{$repo_path}/coverage #{$output_path}")
+  run_command("cd #{$repo_path} && #{yarn_or_npm} #{report_command}", true)
+  run_command("cp #{$repo_path}/test-reports/*-report.xml #{$output_path}", false)
+  run_command("cp -r #{$repo_path}/coverage #{$output_path}", false)
 
   File.open(ENV['AC_ENV_FILE_PATH'], 'a') do |f|
     f.puts "AC_TEST_RESULT_PATH=#{$output_path}"
