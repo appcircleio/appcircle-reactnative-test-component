@@ -1,4 +1,5 @@
 require 'open3'
+require 'colored'
 
 def get_env_variable(key)
   return (ENV[key] == nil || ENV[key] == "") ? nil : ENV[key]
@@ -55,7 +56,7 @@ def runTests
     f.puts "AC_COVERAGE_RESULT_PATH=#{$output_path}/coverage"
   end
 
-  "Tests completed successfully"
+  puts 'Tests completed successfully.'.green
 end
 
 runTests()
